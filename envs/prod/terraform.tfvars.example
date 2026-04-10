@@ -1,0 +1,71 @@
+# TODO: すべて仮値です。実環境に合わせて置換してください。
+project        = "todo"
+environment    = "prod"
+location       = "japaneast" # TODO
+location_short = "jpe"       # TODO
+
+resource_group_name = "APIM_RG" # TODO
+
+tags = {
+  owner       = "todo-owner"      # TODO
+  cost_center = "todo-costcenter" # TODO
+}
+
+# -----------------------------
+# VNet / Subnets（仮のCIDR）
+# -----------------------------
+vnet_address_space          = ["10.10.0.0/16"] # TODO
+subnet_prefix_firewall      = "10.10.0.0/26"   # TODO (AzureFirewallSubnet)
+subnet_prefix_firewall_mgmt = "10.10.0.64/26"  # TODO (AzureFirewallManagementSubnet) ※/26 以上推奨
+subnet_prefix_apim          = "10.10.1.0/24"   # TODO (APIManagement Subnet)
+subnet_prefix_nat           = "10.10.2.0/24"   # TODO (Nat subnet)
+subnet_prefix_pe            = "10.10.3.0/24"   # TODO (PE Subnet)
+
+enable_firewall_management_subnet = true
+enable_nat_subnet                 = true
+
+# -----------------------------
+# APIM 受信（Application Gateway のみ）
+# ※AppGw が別VNetの場合、Peering経由の送信元アドレス帯を指定してください。
+# -----------------------------
+restrict_apim_inbound_to_appgw = true
+appgw_allowed_source_prefixes = [
+  "10.20.0.0/24", # TODO: AppGw subnet CIDR など（実値へ）
+]
+
+restrict_pe_to_apim_subnet = true
+
+# -----------------------------
+# Firewall（基本はブロックし、FQDN を許可）
+# 今は許可すべきFQDNが未確定のため仮値 + TODO
+# -----------------------------
+allowed_target_fqdns = [
+  "api.example.com", # TODO
+]
+
+# 外部ドメインの場合はすべて Firewall へ
+apim_outbound_route = "firewall" # none/firewall
+
+# -----------------------------
+# NAT Gateway（固定 outbound IP）
+# -----------------------------
+enable_nat_gateway             = true
+nat_gateway_association_subnet = "apim" # apim/nat TODO（設計確定後に調整）
+
+# -----------------------------
+# APIM
+# -----------------------------
+apim_name                          = "todo-prod-apim-unique" # TODO: グローバル一意
+apim_sku_name                      = "Developer_1"          # TODO: 本番は Premium など
+apim_publisher_name                = "TODO Publisher"       # TODO
+apim_publisher_email               = "todo@example.com"     # TODO
+apim_virtual_network_type          = "Internal"             # 要件回答により Internal
+apim_public_network_access_enabled = false                  # Internal 前提。公開する場合は見直し
+
+# -----------------------------
+# Private Endpoint (Blob)
+# ※用途未確定のためデフォルト無効
+# -----------------------------
+enable_blob_private_endpoint = false
+# blob_target_resource_id    = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/TODO-rg/providers/Microsoft.Storage/storageAccounts/todostorage" # TODO
+blob_private_dns_zone_ids    = [] # TODO
