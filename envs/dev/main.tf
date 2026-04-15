@@ -141,7 +141,8 @@ module "apim" {
   subnet_id                     = module.network.subnet_id_apim
   public_network_access_enabled = var.apim_public_network_access_enabled
 
-  tags = local.base_tags
+  tags       = local.base_tags
+  depends_on = [module.network]
 }
 
 # -----------------------------

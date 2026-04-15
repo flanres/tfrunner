@@ -54,7 +54,7 @@ resource "azurerm_subnet" "pe" {
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = [var.subnet_prefix_pe]
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled" # PE のみ NSG で通信制限する想定のため、PE に対しては Azure 側のネットワークポリシーは無効化
 }
 
 # -----------------------------
@@ -79,6 +79,22 @@ resource "azurerm_network_security_group" "apim" {
       source_address_prefixes    = var.appgw_allowed_source_prefixes # TODO: AppGw subnet CIDR 等を指定
       destination_address_prefix = "*"
       description                = "Allow HTTPS only from Application Gateway (TODO: set real source prefixes)"
+    }
+  }
+
+  dynamic "security_rule" {
+    for_each = var.restrict_apim_inbound_to_appgw ? [1] : []
+    content {
+      name                       = "allow-control-plane-inbound-3443"
+      priority                   = 110
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "3443"
+      source_address_prefix      = "ApiManagement"
+      destination_address_prefix = "*"
+      description                = "Allow control plane inbound on port 3443 (TODO: set real source prefixes)"
     }
   }
 
