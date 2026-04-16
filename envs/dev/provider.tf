@@ -1,5 +1,10 @@
 provider "azurerm" {
-  features {}
+  features {
+    # ここでリソースグループの削除保護を無効化することができます。
+    # resource_group {
+    #   prevent_deletion_if_contains_resources = false
+    # }
+  }
   # 認証は OIDC を推奨（CI/CD の環境変数で注入）
   # 例:
   #   ARM_USE_OIDC=true
