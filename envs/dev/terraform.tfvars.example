@@ -44,7 +44,7 @@ allowed_target_fqdns = [
 ]
 
 # 外部ドメインの場合はすべて Firewall へ
-apim_outbound_route = "firewall" # none/firewall
+apim_outbound_route = "none" # 検証のため none/firewall
 
 # -----------------------------
 # NAT Gateway（固定 outbound IP）
@@ -60,7 +60,7 @@ apim_sku_name                      = "Developer_1"          # TODO: 本番は Pr
 apim_publisher_name                = "TODO Publisher"       # TODO
 apim_publisher_email               = "todo@example.com"     # TODO
 apim_virtual_network_type          = "Internal"             # 要件回答により Internal
-apim_public_network_access_enabled = false                  # Internal 前提。公開する場合は見直し
+apim_public_network_access_enabled = true                   # TODO Internal 前提。公開する場合は見直し 一旦制約を抜けるためにtrueにしていますが、要件に合わせて調整してください。
 
 # -----------------------------
 # Private Endpoint (Blob)
